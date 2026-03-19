@@ -1,42 +1,72 @@
-// src/services/memorialService.js
+import { mockMemorials, mockFormData } from './mockData.js';
 
-const mockDelay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+// Simula delay API
+const delay = (ms = 500) => new Promise(resolve => setTimeout(resolve, ms));
 
-class MemorialService {
-    async getMemorialById(id) {
-        await mockDelay(1000); // simulate delay
-        return { id, name: 'Sample Memorial' };
+export const memorialService = {
+  // Get single memorial by ID
+  async getMemorialById(memorialId) {
+    await delay();
+    const memorial = mockMemorials.find(m => m.id === memorialId);
+    if (!memorial) {
+      throw new Error('Memorial not found');
     }
+    return memorial;
+  },
 
-    async getAllMemorials() {
-        await mockDelay(1000); // simulate delay
-        return [{ id: 1, name: 'Memorial One' }, { id: 2, name: 'Memorial Two' }];
-    }
+  // Get all memorials
+  async getAllMemorials() {
+    await delay();
+    return mockMemorials;
+  },
 
-    async createMemorial(data) {
-        await mockDelay(1000); // simulate delay
-        return { id: 3, ...data };
-    }
+  // Create new memorial
+  async createMemorial(data) {
+    await delay(1000);
+    const newMemorial = {
+      id: `eternal-${Date.now()}`,
+      ...data,
+      createdAt: new Date().toISOString(),
+      status: 'draft',
+      qrCode: `https://qrcode.com/eternal-${Date.now()}`,
+    };
+    mockMemorials.push(newMemorial);
+    return newMemorial;
+  },
 
-    async updateMemorial(id, data) {
-        await mockDelay(1000); // simulate delay
-        return { id, ...data };
-    }
+  // Update memorial
+  async updateMemorial(memorialId, data) {
+    await delay(1000);
+    const index = mockMemorials.findIndex(m => m.id === memorialId);
+    if (index === -1) throw new Error('Memorial not found');
+    mockMemorials[index] = { ...mockMemorials[index], ...data };
+    return mockMemorials[index];
+  },
 
-    async publishMemorial(id) {
-        await mockDelay(1000); // simulate delay
-        return { id, published: true };
-    }
+  // Publish memorial
+  async publishMemorial(memorialId) {
+    await delay(1000);
+    return this.updateMemorial(memorialId, { status: 'published' });
+  },
 
-    async generateQRCode(data) {
-        await mockDelay(1000); // simulate delay
-        return { data, qrCodeUrl: 'http://example.com/qrcode' };
-    }
+  // Generate QR code
+  async generateQRCode(memorialId) {
+    await delay(500);
+    return {
+      qrCode: `https://qrcode.com/${memorialId}`,
+      memorialUrl: `${window.location.origin}/p/${memorialId}`,
+    };
+  },
 
-    async uploadImage(image) {
-        await mockDelay(1000); // simulate delay
-        return { imageUrl: 'http://example.com/image' };
-    }
-}
-
-module.exports = new MemorialService();
+  // Upload image (mock - save to localStorage + URL.createObjectURL)
+  async uploadImage(file) {
+    await delay(800);
+    const objectUrl = URL.createObjectURL(file);
+    return {
+      id: `img-${Date.now()}`,
+      src: objectUrl,
+      name: file.name,
+      size: file.size,
+    };
+  },
+};
