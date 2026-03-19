@@ -1,0 +1,14 @@
+# Node.js
+node_modules/
+.DS_Store
+.env
+.env.*
+
+# Vite
+/dist/
+.vite/
+
+# Logs
+logs
+*.log
+npm-debug.log*
