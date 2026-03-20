@@ -1,10 +1,1 @@
-'use strict';
-
-module.exports = {
-  plugins: {
-    'postcss-import': {},
-    'postcss-nesting': {},
-    'autoprefixer': {},
-    'cssnano': {} // minifies the CSS
-  }
-};
+export default { plugins: { tailwindcss: {}, autoprefixer: {}, }, };
